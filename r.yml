@@ -1,0 +1,41 @@
+name: Ansible Deploy
+
+# Déclencheur du workflow
+on:
+  push:
+    branches:
+      - master  # Déclenche le workflow uniquement lorsque vous poussez sur la branche master
+  pull_request:
+    branches:
+      - master  # Déclenche le workflow lorsqu'une PR est ouverte contre master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Utilisation d'un runner Ubuntu pour exécuter les étapes
+
+    steps:
+    # Étape 1 : Récupérer le code depuis votre dépôt GitHub
+    - name: Checkout code
+      uses: actions/checkout@v2  # Cette action permet de récupérer le code de votre dépôt GitHub
+
+    # Étape 2 : Installer Ansible
+    - name: Set up Ansible
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip
+        pip3 install ansible  # Installer Ansible sur le runner
+
+    # Étape 3 : Vérifier que Ansible est installé correctement
+    - name: Verify Ansible installation
+      run: ansible --version  # Vérifie que Ansible est bien installé
+
+    # Étape 4 : Exécuter le playbook Ansible
+    - name: Run Ansible Playbook
+      uses: dawidd6/action-ansible-playbook@v2  # Action pour exécuter un playbook Ansible
+      with:
+        playbook: ./r.yml  # Chemin vers le playbook à exécuter
+        inventory: hosts  # Chemin vers le fichier d'inventaire Ansible
+        extra-vars: |
+          ansible_user=ubuntu  # Par exemple, définissez un utilisateur pour l'exécution (si nécessaire)
+          ansible_ssh_private_key_file=${{ secrets.SSH_PRIVATE_KEY }}  # Clé SSH privée pour se connecter à vos hôtes (assurez-vous de l'ajouter dans les secrets de GitHub)
+
