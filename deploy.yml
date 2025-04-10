@@ -1,0 +1,36 @@
+name: CI/CD Pipeline with Ansible
+
+on:
+  push:
+    branches:
+      - master  # Déclencher le workflow lorsque du code est poussé sur la branche "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Vérifiez votre code à partir de GitHub
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Installer Ansible
+      - name: Set up Ansible
+        uses: williamyeh/ansible-setup@v2
+        with:
+          version: latest
+
+      # Copier les fichiers nécessaires
+      - name: Copy Ansible playbook to runner
+        run: |
+          mkdir -p /home/runner/work/tp7/tp7
+          cp -r . /home/runner/work/tp7/tp7
+
+      # Exécuter votre playbook Ansible
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook /home/runner/work/tp7/tp7/playbook.yml -i inventory
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
+          ANSIBLE_SSH_PRIVATE_KEY_FILE: ${{ secrets.SSH_PRIVATE_KEY }}  # Votre clé privée SSH dans les secrets de GitHub
+

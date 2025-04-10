@@ -1,0 +1,27 @@
+name: Ansible Deploy
+
+on:
+  push:
+    branches:
+      - master  # Branche principale 'master' pour le déclenchement du workflow
+  pull_request:
+    branches:
+      - master  # Branche principale 'master' pour les pull requests
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Utilisation d'une machine Ubuntu pour l'exécution
+
+    steps:
+    - name: Checkout code
+      uses: actions/home/rania/ansible-project  # Récupérer le code de votre dépôt
+
+    - name: Set up Ansible
+      uses: dawidd6/action-ansible-playbook@v2  # Installe et configure Ansible
+
+    - name: Run Ansible Playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: ansible-project/playbooks/deploy.yml  # Chemin vers le playbook
+        inventory: ansible-project/hosts  # Chemin vers l'inventaire
+
