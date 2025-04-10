@@ -16,7 +16,7 @@ jobs:
     steps:
     # Étape 1 : Récupérer le code depuis votre dépôt GitHub
     - name: Checkout code
-      uses: actions/checkout@v2  # Cette action permet de récupérer le code de votre dépôt GitHub
+      uses: actions /home/rania/ansible-project # Cette action permet de récupérer le code de votre dépôt GitHub
 
     # Étape 2 : Installer Ansible
     - name: Set up Ansible
